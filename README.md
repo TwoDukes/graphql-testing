@@ -1,1 +1,2 @@
-course
+GraphQL course
+ 
