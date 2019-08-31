@@ -4,62 +4,62 @@ import uuidv4 from 'uuid/v4'
 
 // Demo Data
 
-const users = [{
+let users = [{
   id: "1",
   name: "Dustin",
   email: "Dustin@AurigonTech.com",
   age: 22
 },{
-  id: 2,
+  id: "2",
   name: "Sarah",
   email: "Sarah@example.com",
 },{
-  id: 3,
+  id: "3",
   name: "Mike",
   email: "Mike@example.com",
   age: 27
 }]
 
-const posts = [{
+let posts = [{
   id: "4",
   title: "Good stuff",
   body: "in progress",
   published: true,
-  author: 2
+  author: "2"
 },{
-  id: 5,
+  id: "5",
   title: "wowzer",
   body: "such good things",
   published: true,
-  author: 1
+  author: "1"
 },{
-  id: 6,
+  id: "6",
   title: "amazeballs",
   body: "cant believe it",
   published: false,
-  author: 1
+  author: "1"
 }]
 
-const comments = [{
-  id: 7,
+let comments = [{
+  id: "7",
   text: "Im a good comment",
-  post: 4,
-  author: 1
+  post: "4",
+  author: "1"
 },{
-  id: 8,
+  id: "8",
   text: "Good thing to comment on",
-  post: 4,
-  author: 3
+  post: "4",
+  author: "3"
 },{
-  id: 9,
+  id: "9",
   text: "graphql is pretty neato",
-  post: 6,
-  author: 3
+  post: "6",
+  author: "3"
 },{
-  id: 10,
+  id: "10",
   text: "babingus comment",
-  post: 5,
-  author: 2
+  post: "5",
+  author: "2"
 }]
 
 
@@ -77,6 +77,8 @@ const typeDefs = `
 
   type Mutation {
     createUser(data: CreateUserInput!): User!
+    deleteUser(id: ID!): User!
+
     createPost(data: CreatePostInput!): Post!
     createComment(data: CreateCommentInput!): Comment!
   }
@@ -184,6 +186,27 @@ const resolvers = {
       users.push(user)
 
       return user
+    },
+    deleteUser(parent, args, ctx, info){
+      const userIndex = users.findIndex((user) => user.id === args.id)
+
+      if(userIndex === -1) throw new Error('User not found')
+
+      const deletedUsers = users.splice(userIndex, 1)
+
+      posts = posts.filter((post) => {
+        const match = post.author === args.id
+
+        if(match){
+          comments = comments.filter((comment) => comment.post !== post.id)
+        }
+
+        return !match
+      })
+      comments = comments.filter((comment) => comment.author !== args.id)
+
+
+      return deletedUsers[0]
     },
     createPost(parent, args, ctx, info){
       const userExists = users.some((user) => user.id === args.data.author)
