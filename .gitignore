@@ -92,4 +92,6 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+docker-compose.yml
+
 # End of https://www.gitignore.io/api/node
