@@ -18,7 +18,7 @@ const posts = [{
   id: "4",
   title: "Good stuff",
   body: "in progress",
-  published: true,
+  published: false,
   author: "2"
 },{
   id: "5",
@@ -30,7 +30,7 @@ const posts = [{
   id: "6",
   title: "amazeballs",
   body: "cant believe it",
-  published: false,
+  published: true,
   author: "1"
 }]
 
