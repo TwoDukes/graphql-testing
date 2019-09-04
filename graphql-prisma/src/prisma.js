@@ -5,43 +5,49 @@ const prisma = new Prisma({
   endpoint: 'http://localhost:4466'
 })
 
-// prisma.query.users(null, '{id name posts { id title }}').then((data) => {
-//   console.log(JSON.stringify(data, undefined, 2))
+const createPostForUser = async (authorId, data) => {
+  const post = await prisma.mutation.createPost({
+    data: {
+      ...data,
+      author:{
+        connect: {
+          id: authorId
+        }
+      }
+    }
+  }, '{ id }')
+
+  const user = await prisma.query.user({
+    where: {id: authorId}
+  }, '{ id name email posts { id title published } }')
+
+  return user
+}
+
+// createPostForUser("ck03bpf0a00450777gf7uvdah", {
+//   title: "Great books to read",
+//   body: "The war of art",
+//   published: true
+// }).then((user) => {
+//   console.log(JSON.stringify(user, undefined, 2))
 // })
 
-// prisma.query.comments(null, '{id text author {id name}}').then((data) => {
-//   console.log(JSON.stringify(data, undefined, 2))
-// })
+const updatePostForUser = async (postId, data) => {
+  const post = await prisma.mutation.updatePost({
+    where: {id: postId},
+    data: {...data}
+  }, '{author {id}}')
 
-// prisma.mutation.createPost({
-//   data: {
-//     title: "Testing a second post",
-//     body: "",
-//     published: false,
-//     author: {
-//       connect:{
-//         id: "ck03bw0j0006407776awncln3"
-//       }
-//     }
-//   }
-// }, '{id title body published}').then((data) => {
-//   console.log(data)
-//   return prisma.query.users(null, '{id name posts { id title published }}')
-// }).then((data) => {
-//   console.log(JSON.stringify(data, undefined, 2))
-// })
+  const user = await prisma.query.user({
+    where: {id: post.author.id}
+  }, '{ id name email posts { id title body published } }')
 
-prisma.mutation.updatePost({
-  where:{
-    id: "ck03n1xrf06hq07774mhkqfry"
-  },
-  data:{
-    body: "Here is the body now that the post is finished",
-    published: true
-  }
-}).then((data) => {
-  console.log(data)
-  return prisma.query.posts(null, '{id title body published author {id name}}')
-}).then((data) => {
-  console.log(JSON.stringify(data, undefined, 2))
-})
+  return user 
+}
+
+// updatePostForUser("ck04l7kgu006m0777hgb1xbn5", {
+//   title:"Great movies to watch",
+//   body:"Interstellar"
+// }).then((user) => {
+//   console.log(JSON.stringify(user, undefined, 2))
+// })
