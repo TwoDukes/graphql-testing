@@ -3,7 +3,10 @@ import getUserId from '../utils/getUserId'
 const Query = {
   users(parent, args, { prisma }, info){
     
-    const opArgs = {}
+    const opArgs = {
+      first: args.first,
+      skip: args.skip
+    }
 
     if(args.query){
       opArgs.where = {
@@ -20,6 +23,8 @@ const Query = {
     const userId = getUserId(request)
 
     const opArgs = {
+      first: args.first,
+      skip: args.skip,
       where:{
         author:{
           id: userId
