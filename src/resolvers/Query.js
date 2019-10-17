@@ -5,7 +5,9 @@ const Query = {
     
     const opArgs = {
       first: args.first,
-      skip: args.skip
+      skip: args.skip,
+      after: args.after,
+      orderBy: args.orderBy
     }
 
     if(args.query){
@@ -25,6 +27,8 @@ const Query = {
     const opArgs = {
       first: args.first,
       skip: args.skip,
+      after: args.after,
+      orderBy: args.orderBy,
       where:{
         author:{
           id: userId
@@ -47,6 +51,10 @@ const Query = {
   posts(parent, args, { prisma }, info){
 
     const opArgs = {
+      first: args.first,
+      skip: args.skip,
+      after: args.after,
+      orderBy: args.orderBy,
       where:{
         published:true
       }
@@ -64,8 +72,15 @@ const Query = {
       
   },
   async comments(parent, args, { prisma, request }, info){
+
+    const opArgs = {
+      first: args.first,
+      skip: args.skip,
+      after: args.after,
+      orderBy: args.orderBy
+    }
     
-    return prisma.query.comments(null, info)
+    return prisma.query.comments(opArgs, info)
 
   },
   async me(parent, args, { prisma, request }, info){
