@@ -1,6 +1,8 @@
 "use strict";
 
-require("@babel/polyfill");
+require("core-js");
+
+require("regenerator-runtime/runtime");
 
 var _graphqlYoga = require("graphql-yoga");
 
